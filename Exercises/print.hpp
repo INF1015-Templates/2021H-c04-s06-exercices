@@ -1,5 +1,5 @@
 ///
-/// Exemples des slides sur les classes/fonctions génériques (exemple 'afficherX()')
+/// Utilitaires pour afficher les ctor/dtor d'une classe donnÃ©e.
 ///
 
 #pragma once
@@ -7,91 +7,53 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <new>
 
-#include <array>
-#include <span>
-#include <ranges>
+#include <cstdio>
+#include <iostream>
+#include <string>
+
+#include <list>
 
 using namespace std;
 
 
-template <typename T>
-void print1(ostream& out, T* values, int nValues) {
-	out << "{";
-	for (int i = 0; i < nValues; i++) {
-		if (i != 0)
-			out << ", ";
-		out << values[i];
-	}
-	out << "}";
+void printDefCtor ( const char* c )
+{
+	printf("%s::%s()" "\n", c, c);
 }
 
-
-template <typename T, int size>
-class Array {
-public:
-	int getSize() const { return size; }
-
-	template <typename U>
-	Array<U, size> toArray() const {
-		Array<U, size> result;
-		for (int i = 0; i < size; ++i)
-			result[i] = U(values_[i]);
-		return result;
-	}
-
-	T& operator[] (int index) { return values_[index]; }
-	const T& operator[] (int index) const { return values_[index]; }
-
-private:
-	T values_[size] = {};
-};
-
-
-template <typename T>
-void print2(ostream& out, span<const T> values) {
-	out << "{";
-	bool firstIter = true;
-	for (auto&& v : values) {
-		if (not firstIter)
-			out << ", ";
-		out << v;
-		firstIter = false;
-	}
-	out << "}";
+void printCpyCtor ( const char* c )
+{
+	printf("%s::%s(const %s&)" "\n", c, c, c);
 }
 
-template <typename T, size_t size>
-void print2(ostream& out, span<T, size> values) {
-	print2(out, span<const T>(values));
+void printMovCtor ( const char* c )
+{
+	printf("%s::%s(%s&&)" "\n", c, c, c);
 }
 
-template <typename T>
-void print3(ostream& out, const T& values) {
-	out << "{";
-	bool firstIter = true;
-	for (auto&& v : values) {
-		if (not firstIter)
-			out << ", ";
-		out << v;
-		firstIter = false;
-	}
-	out << "}";
+void printIntParamCtor ( const char* c )
+{
+	printf("%s::%s(int)" "\n", c, c);
 }
 
-template <typename T>
-using AsSpanConst = span<const ranges::range_value_t<T>>;
-
-template < typename T>
-concept ConvertibleToSpanConst = is_convertible_v<T, AsSpanConst<T>>;
-
-template <ConvertibleToSpanConst T>
-void print4(ostream& out, const T& values) {
-	print3(out, AsSpanConst<T>(values));
+void printStrParamCtor ( const char* c )
+{
+	printf("%s::%s(const string&)" "\n", c, c);
 }
 
-template <typename T>
-requires ranges::input_range<T> and not ConvertibleToSpanConst<T>
-void print4(ostream& out, const T& values) {
-	print3(out, values);
+void printDtor ( const char* c )
+{
+	printf("%s::~%s()" "\n", c, c);
+}
+
+void printCpyAsgn ( const char* c )
+{
+	printf("%s::operator=(const %s&)" "\n", c, c);
+}
+
+void printMovAsgn ( const char* c )
+{
+	printf("%s::operator=(%s&&)" "\n", c, c);
 }

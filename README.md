@@ -1,15 +1,10 @@
-# Modèles (*templates*) de classe et de fonction, lambda
+# Héritage, polymorphisme et conversion d'objets
 
-## Fichier `print.hpp`
+## Fichier `MyClass.hpp`
 
-Exemples des slides sur les templates.
+Ensemble de classes bidon qui ne font qu'afficher dans `cout` les appels de constructeurs/destructeurs/méthodes qu'on y fait pour montrer différents comportements.
 
-## Fichiers `Fraction.*` et `Vector.*`
+## Fichier `School.hpp`
 
-Exemple de la dernière fois sur les vecteurs et les fractions. Les vecteurs ont maintenant quelques opérateurs arithmétiques.
-
-Nous allons transformer cette classe en template pour permettre n'importe quel type sous-jacent (on avait seulement des `int` jusqu'à présent).
-
-Un exercice à faire à la maison serait d'implémenter les opérateurs de comparaison (ou disons juste l'égalité) entre deux vecteurs de types différents.
-
+Exemples de classes en héritage et en composition/aggrégation.
 

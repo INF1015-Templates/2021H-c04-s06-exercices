@@ -9,11 +9,8 @@ project(Exercises)
 set(ALL_FILES
     "main.cpp"
     "print.hpp"
-    "lambda.hpp"
-    "Fraction.hpp"
-    "Fraction.cpp"
-    "Vector.hpp"
-    "Vector.cpp")
+    "School.hpp"
+    "MyClass.hpp")
 
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
