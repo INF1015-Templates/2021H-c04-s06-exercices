@@ -3,10 +3,8 @@
 
 #pragma region "Includes" //{
 
-#include <ciso646>
 #include <cstddef>
 #include <cstdint>
-#include <new>
 
 #include <iostream>
 

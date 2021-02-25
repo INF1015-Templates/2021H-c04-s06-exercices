@@ -1,7 +1,6 @@
 #pragma once
 
 
-#include <ciso646>
 #include <cstddef>
 #include <cstdint>
 
@@ -11,7 +10,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include <cppitertools/range.hpp>
+#include <cppitertools/itertools.hpp>
 
 using namespace std;
 using namespace iter;
@@ -197,7 +196,7 @@ public:
 	}
 
 private:
-	vector<unique_ptr<Student>> students_;
-	vector<UndergradStudent*>   undergrads_;
+	vector<unique_ptr<Student>> students_; // Contient les ressources
+	vector<UndergradStudent*>   undergrads_; // Conteneur redondant pour séparer les étudiants au bac.
 	vector<GraduateStudent*>    gradStudents_;
 };

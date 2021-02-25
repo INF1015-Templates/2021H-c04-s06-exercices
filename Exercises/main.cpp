@@ -20,10 +20,23 @@
 
 #include "MyClass.hpp"
 #include "School.hpp"
+#include "Clock.hpp"
 
 using namespace std;
 using namespace iter;
 
+
+void runClockExample() {
+	Clock c1(true);
+	TravelClock c2(true, "Final Stage", +6);
+	TravelClock c3(false, "Hyrule", -10);
+	cout << c1 << "\n" << c2 << "\n" << c3 << "\n\n";
+
+	vector<Clock*> clocks = {&c1, &c2, &c3};
+	for (auto&& c : clocks)
+		cout << *c << "\n";
+	cout << "\n";
+}
 
 void runInheritanceExample() {
 	/*
@@ -98,6 +111,10 @@ void runConversionExample() {
 
 
 int main() {
-	
+	runClockExample();
+	cout << "\n\n\n\n";
+	runInheritanceExample();
+	cout << "\n\n\n\n";
+	runConversionExample();
 }
 

@@ -38,5 +38,8 @@
     <ClInclude Include="School.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Clock.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

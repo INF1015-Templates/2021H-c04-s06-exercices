@@ -10,7 +10,8 @@ set(ALL_FILES
     "main.cpp"
     "print.hpp"
     "School.hpp"
-    "MyClass.hpp")
+    "MyClass.hpp"
+    "Clock.hpp")
 
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
