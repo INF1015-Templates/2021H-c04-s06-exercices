@@ -15,138 +15,136 @@
 #include <span>
 #include <utility>
 
-#include <cppitertools/range.hpp>
-#include <cppitertools/enumerate.hpp>
+#include <cppitertools/itertools.hpp>
 #include <cppitertools/zip.hpp>
 
-#include "Fraction.hpp"
-#include "Vector.hpp"
-#include "print.hpp"
-#include "lamda.hpp"
+#include "MyClass.hpp"
+#include "School.hpp"
+#include "Clock.hpp"
 
 using namespace std;
 using namespace iter;
 
 
-void runArrayExample() {
-	Array<double, 3> foo;
-	foo[1] = 2.2; foo[2] = 4.4;
-	const auto& cfoo = foo;
-	print1(cout, &cfoo[0], foo.getSize());
-	cout << "\n";
-	Array bar = foo.toArray<int>();
-	print1(cout, &bar[0], bar.getSize());
-	cout << "\n";
-}
+void runClockExample() {
+	Clock c1(true);
+	TravelClock c2(true, "Final Stage", +6);
+	TravelClock c3(false, "Hyrule", -10);
+	cout << c1 << "\n" << c2 << "\n" << c3 << "\n\n";
 
-void runPrintExample() {
-	int a[] = {4, 1, 3};
-	int b[] = {5, 6};
-	string c[] = {"b", "a"};
-	using F = Fraction;
-	Fraction d[] = {F(1, 2), F(2, 3), F(5, 2)};
-	//vector<int> e[] = {{}, {}};
-	print1(cout, a, 3); print1(cout, b, 2); print1(cout, c, 2); print1(cout, d, 2);
+	bool foo = c1.isMilitary();
+
+	vector<Clock*> clocks = {&c1, &c2, &c3};
+	for (auto&& c : clocks)
+		cout << *c << "\n";
 	cout << "\n";
 
-	array<int, 2> arr = {3, 2};
-	vector<int> vec = {3, 2};
-	deque<int> deq = {1, 2, 3};
-	print2(cout, span<const int>(arr)); cout << "\n";
-	print2(cout, span<int>(vec)); cout << "\n";
-	//print2(cout, span(arr)); cout << "\n";
-	//print2(cout, span(vec)); cout << "\n";
-	print3(cout, arr); cout << "\n";
-	print3(cout, vec); cout << "\n";
-	print3(cout, deq); cout << "\n";
-	//print3(cout, 42); cout << "\n"; // Erreur dans le for (pas capable d'it�rer sur 42).
-	print4(cout, vec); cout << "\n";
-	//print4(cout, deq); cout << "\n";
-}
+	auto& c2tc = dynamic_cast<TravelClock&>(*clocks[0]);
+	cout << c2tc.getTimeDiff() << "\n";
 
-void runVectorExample() {
-	{
-		array<int, 3> values1 = {1, 2, 3};
-		array<int, 3> values2 = {10, 20, 30};
-		Vector<int> foo = span<const int>(values1);
-		Vector<int> bar = span<const int>(values2);
-		foo += bar + bar;
-		foo -= bar;
-		cout << foo << "\n";
-	}
-	{
-		using F = Fraction;
-		array<Fraction, 3> values1 = {F(1, 1), F(1, 2), F(1, 3)};
-		array<Fraction, 3> values2 = {1, 2, 3};
-		array<int, 3> values3 = {10, 20, 30};
-		Vector<Fraction> foo(values1);
-		Vector<Fraction> bar(values2);
-		Vector<int> qux(values3);
+	unique_ptr<Clock> c4 = make_unique<TravelClock>(true, "Dreamland", +4);
 
-		auto fn = [=, &spam = foo] (int i) {
-			cout << spam[i] << " " << bar[i] << "\n";
-		};
-		fn(1);
-		foo[1] = F(1, 3);
-		bar[1] = F(1, 3);
-		fn(1);
-
-		cout << foo << "\n";
-		foo += Vector<Fraction>(qux);
-		cout << foo << "\n";
-		foo -= bar;
-		cout << foo << "\n";
-	}
-}
-
-void runLambdaExample() {
-	class Spam {
+	class UberSuperDuperTravelClock : public TravelClock {
 	public:
-		void print() {
-			val = 9000;
-			string foo = "hello";
-			function<void()> fn = [=] () mutable {
-				cout << foo << "\n";
-				foo = "wurld";
-			};
-			val = 69;
-			fn();
-			foo = "fren";
-			val = 42;
-			fn();
-		}
-
-		int val = 0;
+		using TravelClock::TravelClock;
 	};
 
-	Spam spam = {};
-	spam.print();
+	auto c5 = make_unique<UberSuperDuperTravelClock>(true, "henlo", +10);
+	Clock& c5c = *c5;
+	// On peut faire un dynamic_cast vers une classe intermédiaire dans l'arbre d'héritage (pas obliger de convertir jusqu'à la classe la plus dérivée.
+	auto& c5tc = dynamic_cast<TravelClock&>(c5c);
 
-	vector<int> foo = {1, 2, 3, 4, 5};
-	vector<int> bar = {10, 20, 30, 40, 50};
-	auto next1 = getNextFn(foo);
-	auto next2 = getNextFn(bar);
-	for (auto i : range(foo.size()))
-		cout << next1() << " ";
-	cout << "\n";
-	for (auto i : range(bar.size()))
-		cout << next2() << " ";
-	cout << "\n";
-
-	auto&& [line, curve] = generateCurves<double>(10, 2, 1);
-	for (auto&& x : {-1, 0, 1, 5, 10})
-		cout << line(x) << " ";
-	cout << "\n";
 }
 
+void runInheritanceExample() {
+	/*
+	    MyClass (dtor virtuel)
+	       ^
+	       |
+	  MyNiceClass
+
+	  MyOtherClass (dtor régulier)
+	       ^
+	       |
+	MyOtherNiceClass
+	*/
+
+	// On peut créer des unique_ptr d'une classe dérivée et de les mettre dans un unique_ptr d'une classe de base, car les unique_ptr supporte le upcasting.
+	unique_ptr<MyClass> anickClermont = make_unique<MyNiceClass>(42);
+	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+	unique_ptr<MyOtherClass> mathieuSavoie = make_unique<MyOtherNiceClass>(0xBADF00D);
+	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+
+	// Si on détruit anickClermont, on voit que le destructeur se fait appeler correctement, car il est virtuel.
+	anickClermont.reset();
+	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+	// Toutefois, pour mathieuSavoie, le destructeur n'est pas virtuel. Or, unique_ptr<MyOtherClass> ne sait pas qu'il faut appeler le destructeur de MyOtherNiceClass, et donc appelle seulement celui de MyOtherClass.
+	mathieuSavoie.reset();
+	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+	// Si on avait directement un unique_ptr (ou un objet sur la pile) de MyOtherNiceClass, on n'a pas ce problème. C'est donc dans le cas où le destructeur est appelé à partir d'un pointeur/référence up-casté, et donc devrait être appelé virtuellement.
+	auto maxenceMathieu = make_unique<MyOtherNiceClass>();
+	cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+	maxenceMathieu.reset();
+}
+
+void runConversionExample() {
+	// Opérateurs de conversion :
+	//  - static_cast
+	//  - dynamic_cast
+	//  - const_cast
+	//  - reinterpret_cast
+	//  - C-style cast : (int)foo
+	{
+		double pierre = 42.42;
+		// Conversion de réel à entier, donc troncation.
+		int vicky = pierre;
+		MyNiceClass mathias;
+		// Faire un upcasting est un static_cast, mais peut être implicite.
+		MyClass& kim = static_cast<MyClass&>(mathias);
+		// On peut faire un downcast avec static_cast, mais aucune vérification n'est faite.
+		MyNiceClass& charlotte = static_cast<MyNiceClass&>(kim);
+		// À l'exécution, dynamic_cast vérifie que le downcast est valide. Si la vérification échoue pour une référence, une exception est lancé (le programme plante).
+		MyNiceClass& julia = dynamic_cast<MyNiceClass&>(kim);
+		// Si le dynamic_cast pour un pointeur échoue, un pointeur nul est retourné.
+		MyNiceClass* cassandra = dynamic_cast<MyNiceClass*>(&kim);
+	}
+	{
+		MyNiceClass lydia;
+		// Prendre une référence constante vers un objet non-constant ajoute une contrainte et est implicite (donc fait un const_cast implicitement). Le upcasting fait un static_cast implicitement.
+		const MyClass& lydiaConst = lydia;
+		// Pour enlever la constance, il faut faire const_cast, pour upcaster, il faut faire dynamic_cast (ou static_cast).
+		MyNiceClass& lydiaOrig = const_cast<MyNiceClass&>(dynamic_cast<const MyNiceClass&>(lydiaConst));
+	}
+	{
+		double claudia = 42.42;
+		double* claudiaPtr = &claudia;
+		// reinterpret_cast ne change rien aux données. 'louis' va contenir la même adresse que 'claudiaPtr', mais en pensant que c'est un int à 8 octets (je compile en 64 bit).
+		uint64_t* louis = reinterpret_cast<uint64_t*>(claudiaPtr);
+		cout << *louis << "\n";
+		// Dans ce cas, le c-style cast fait un static_cast (donc troncation).
+		uint64_t ethan = (uint64_t)claudia;
+		// Dans ce cas, le c-style cast fait un reinterpret_cast, 'yoan' va contenir sous forme d'entier l'adresse pointée par 'claudiaPtr'. Les bits sont inchangés.
+		uint64_t yoan = (uint64_t)claudiaPtr;
+	}
+}
+
+void runSchoolExample() {
+	GraduateStudent foo(0xDEADBEEF, "Infologie", nullptr);
+	Student& bar = foo;
+	foo.changeSupervisor(nullptr);
+	foo.updateGpa(2.5);
+	bar.updateGpa(3.8);
+	//bar.changeSupervisor(nullptr);
+	bar.changeProgram("qqch idk my life is meaningless");
+}
 
 int main() {
-	//runArrayExample();
-	//cout << "\n\n\n";
-	//runPrintExample();
-	//cout << "\n\n\n";
-	//runVectorExample();
-	//cout << "\n\n\n";
-	//runLambdaExample();
+	//runClockExample();
+	//cout << "\n\n\n\n";
+	//runInheritanceExample();
+	//cout << "\n\n\n\n";
+	//runConversionExample();
+	//cout << "\n\n\n\n";
+	//runSchoolExample();
 }
 
