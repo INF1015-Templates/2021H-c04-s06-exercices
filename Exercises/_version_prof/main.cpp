@@ -112,7 +112,7 @@ void runConversionExample() {
 		MyNiceClass lydia;
 		// Prendre une référence constante vers un objet non-constant ajoute une contrainte et est implicite (donc fait un const_cast implicitement). Le upcasting fait un static_cast implicitement.
 		const MyClass& lydiaConst = lydia;
-		// Pour enlever la constance, il faut faire const_cast, pour upcaster, il faut faire dynamic_cast (ou static_cast).
+		// Pour enlever la constance, il faut faire const_cast, pour downcaster, il faut faire dynamic_cast (ou static_cast).
 		MyNiceClass& lydiaOrig = const_cast<MyNiceClass&>(dynamic_cast<const MyNiceClass&>(lydiaConst));
 	}
 	{
